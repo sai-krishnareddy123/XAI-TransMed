@@ -1,0 +1,222 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xAI-transmed: Explainable AI for Alzheimer's Detection</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>XAI-TransMed: Explainable AI for Alzheimer's Detection and Progression Rate</h1>
+        <p>Upload an MRI brain scan to predict dementia stage and see model attention.</p>
+
+        <div class="upload-section">
+            <input type="file" id="imageUpload" accept="image/*">
+            <select id="methodSelect">
+                <option value="rollout" selected>Attention Rollout</option>
+                <option value="gradcam">Grad‑CAM</option>
+            </select>
+            <button id="predictBtn" onclick="predict()">Analyze</button>
+        </div>
+
+        <div class="loader" id="loader" style="display: none;">Processing...</div>
+
+        <div class="results" id="results" style="display: none;">
+            <div class="image-section">
+                <div>
+                    <h3>Original Image</h3>
+                    <img id="originalImg" src="" alt="Original">
+                </div>
+                <div>
+                    <h3>Attention Heatmap</h3>
+                    <img id="heatmapImg" src="" alt="Heatmap">
+                </div>
+            </div>
+
+            <div class="prediction">
+                <h2 id="predictionText"></h2>
+                <p id="confidenceText"></p>
+                <div class="probabilities">
+                    <h4>Class Probabilities:</h4>
+                    <ul id="probList"></ul>
+                </div>
+            </div>
+
+            <div class="region-scores" id="regionScores">
+                <h4>Region Attention Scores:</h4>
+                <ul id="regionList"></ul>
+            </div>
+        </div>
+    </div>
+    <div class="progression-section">
+    <h2>Progression Risk with Clinical Data</h2>
+    <p>Enter the patient's clinical data to estimate risk of progression:</p>
+    <form id="progressionForm">
+        <label>Age: <input type="number" step="0.1" name="Age" required></label><br>
+        <label>EDUC (years): <input type="number" step="0.1" name="EDUC" required></label><br>
+        <label>SES (optional): <input type="number" step="0.1" name="SES"></label><br>
+        <label>MMSE score: <input type="number" step="0.1" name="MMSE" required></label><br>
+        <label>nWBV: <input type="number" step="0.01" name="nWBV" required></label><br>
+        <label>eTIV: <input type="number" step="0.1" name="eTIV" required></label><br>
+        <label>ASF: <input type="number" step="0.01" name="ASF" required></label><br>
+        <button type="button" onclick="predictProgression()">Estimate Risk</button>
+    </form>
+    <div id="progressionResult" style="display:none;">
+        <h3>Progression Risk Score</h3>
+        <p id="hazardRatio"></p>
+        <p id="riskInterpretation"></p>
+    </div>
+</div>
+<div class="lstm-section">
+    <script src="script.js"></script>
+    <div class="lstm-section">
+    <h2>MRI‑Based Progression Prediction</h2>
+    <p>Upload past MRI scans (chronological order, oldest first) to predict future CDR.</p>
+    <input type="file" id="lstmFiles" multiple accept="image/*">
+    <button onclick="predictLSTM()">Predict Progression</button>
+    <div id="lstmResult"></div>
+</div>
+</body>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xAI‑TransMed – Explainable AI for Alzheimer's</title>
+    <link rel="stylesheet" href="style.css">
+    <   !   -- Font Awesome for icons (optional but nice) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xAI‑TransMed – Explainable AI for Alzheimer's</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-brain"></i> xAI‑TransMed</h1>
+            <p class="subtitle">Explainable AI for Alzheimer's Detection & Progression</p>
+        </header>
+
+        <!-- CLASSIFICATION -->
+        <section class="card">
+            <h2><i class="fas fa-magnifying-glass"></i> Dementia Stage Classification</h2>
+            <p>Upload a single MRI scan to get the current dementia stage and an attention heatmap.</p>
+            <div class="upload-area">
+                <input type="file" id="imageUpload" accept="image/*" hidden>
+                <button class="btn-secondary" onclick="document.getElementById('imageUpload').click()">
+                    <i class="fas fa-upload"></i> Choose Image
+                </button>
+                <span id="file-name" class="file-name">No file chosen</span>
+                <select id="methodSelect" class="method-select">
+                    <option value="rollout">Attention Rollout</option>
+                    <option value="gradcam">Grad‑CAM</option>
+                </select>
+                <button class="btn-primary" onclick="predict()">
+                    <i class="fas fa-play"></i> Analyze
+                </button>
+            </div>
+            <div class="loader" id="loader" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i> Processing...
+            </div>
+            <div class="results" id="results" style="display: none;">
+                <div class="image-panel">
+                    <div><h3>Original Image</h3><img id="originalImg" src="" alt="Original MRI"></div>
+                    <div><h3>Attention Heatmap</h3><img id="heatmapImg" src="" alt="Heatmap"></div>
+                </div>
+                <div class="prediction-panel">
+                    <div class="prediction-badge" id="predictionText">Prediction: </div>
+                    <div class="confidence" id="confidenceText">Confidence: </div>
+                    <h4>Class Probabilities</h4>
+                    <ul id="probList" class="prob-list"></ul>
+                    <h4>Region Attention Scores</h4>
+                    <ul id="regionList" class="region-list"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- CLINICAL PROGRESSION (Cox) -->
+        <section class="card">
+            <h2><i class="fas fa-chart-line"></i> Progression Risk (Clinical)</h2>
+            <p>Enter clinical data to estimate hazard ratio (risk of progression).</p>
+            <form id="progressionForm" class="form-grid">
+                <div class="form-group"><label>Age <i class="fas fa-info-circle tooltip" title="Patient's age in years"></i></label><input type="number" step="0.1" name="Age" required></div>
+                <div class="form-group"><label>EDUC (years)</label><input type="number" step="0.1" name="EDUC" required></div>
+                <div class="form-group"><label>SES (optional)</label><input type="number" step="0.1" name="SES"></div>
+                <div class="form-group"><label>MMSE score</label><input type="number" step="0.1" name="MMSE" required></div>
+                <div class="form-group"><label>nWBV</label><input type="number" step="0.01" name="nWBV" required></div>
+                <div class="form-group"><label>eTIV</label><input type="number" step="0.1" name="eTIV" required></div>
+                <div class="form-group"><label>ASF</label><input type="number" step="0.01" name="ASF" required></div>
+                <div class="form-actions">
+                    <button type="button" class="btn-primary" onclick="predictProgression()">
+                        <i class="fas fa-calculator"></i> Estimate Risk
+                    </button>
+                </div>
+            </form>
+            <div class="progression-result" id="progressionResult" style="display: none;">
+                <h3>Hazard Ratio: <span id="hazardRatio"></span></h3>
+                <p id="riskInterpretation"></p>
+            </div>
+        </section>
+
+        <!-- MRI-BASED LSTM PROGRESSION -->
+        <section class="card">
+            <h2><i class="fas fa-images"></i> MRI‑Based Progression (LSTM)</h2>
+            <p>Upload multiple MRI scans (chronological order, oldest first) to predict future CDR.</p>
+            <div class="upload-area">
+                <input type="file" id="lstmFiles" multiple accept="image/*" hidden>
+                <button class="btn-secondary" onclick="document.getElementById('lstmFiles').click()">
+                    <i class="fas fa-upload"></i> Choose Files
+                </button>
+                <span id="lstm-file-count" class="file-name">No files chosen</span>
+                <button class="btn-primary" onclick="predictLSTM()">
+                    <i class="fas fa-chart-simple"></i> Predict Progression
+                </button>
+            </div>
+            <div class="progression-result" id="lstmResult" style="display: none;">
+                <h3>Predicted Future CDR: <span id="predictedCDR"></span></h3>
+                <p id="lstmInterpretation"></p>
+            </div>
+        </section>
+
+        <!-- XGBoost MMSE PROGRESSION (NEW) -->
+        <section class="card">
+            <h2><i class="fas fa-brain"></i> MRI‑Based MMSE Prediction (XGBoost)</h2>
+            <p>Upload an MRI scan and enter clinical data to predict the MMSE score at the next visit.</p>
+            <div class="upload-area">
+                <input type="file" id="xgbImage" accept="image/*" hidden>
+                <button class="btn-secondary" onclick="document.getElementById('xgbImage').click()">
+                    <i class="fas fa-upload"></i> Choose MRI
+                </button>
+                <span id="xgb-file-name" class="file-name">No file chosen</span>
+            </div>
+            <form id="xgbForm" class="form-grid">
+                <div class="form-group"><label>Age</label><input type="number" step="0.1" name="Age" required></div>
+                <div class="form-group"><label>EDUC (years)</label><input type="number" step="0.1" name="EDUC" required></div>
+                <div class="form-group"><label>SES (optional)</label><input type="number" step="0.1" name="SES"></div>
+                <div class="form-group"><label>MMSE (current)</label><input type="number" step="0.1" name="MMSE" required></div>
+                <div class="form-group"><label>nWBV</label><input type="number" step="0.01" name="nWBV" required></div>
+                <div class="form-group"><label>eTIV</label><input type="number" step="0.1" name="eTIV" required></div>
+                <div class="form-group"><label>ASF</label><input type="number" step="0.01" name="ASF" required></div>
+                <div class="form-actions">
+                    <button type="button" class="btn-primary" onclick="predictXGB()">
+                        <i class="fas fa-chart-line"></i> Predict Next MMSE
+                    </button>
+                </div>
+            </form>
+            <div class="progression-result" id="xgbResult" style="display: none;">
+                <h3>Predicted Next MMSE: <span id="predictedMMSE"></span></h3>
+                <p id="xgbInterpretation"></p>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
