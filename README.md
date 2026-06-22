@@ -1,6 +1,6 @@
-# xAI-TransMed: Explainable AI for Alzheimer's Detection and Progression Rate
+# XAI-TransMed: Explainable AI for Alzheimer's Detection and Progression Rate
 
-xAI-TransMed is an advanced decision-support platform that combines deep learning, sequence modeling, and traditional machine learning to classify dementia stages from brain MRI scans and estimate disease progression rates over time.
+XAI-TransMed is an advanced decision-support platform that combines deep learning, sequence modeling, and traditional machine learning to classify dementia stages from brain MRI scans and estimate disease progression rates over time.
 
 ---
 
